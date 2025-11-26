@@ -1,9 +1,16 @@
-# cursos/urls.py
+from cursos import views
 from rest_framework.routers import DefaultRouter
-
-from cursos.views import CursosViewSet
+from django.urls import path
 
 router = DefaultRouter()
-router.register(r"cursos", CursosViewSet, basename="curso")
+router.register(r"cursos", views.CursosViewSet, basename="curso")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path(
+        "reportes/horas-semanales/",
+        views.reporte_horas_semanales,
+        name="reporte-horas-semanales",
+    ),
+]
+
+urlpatterns += router.urls
