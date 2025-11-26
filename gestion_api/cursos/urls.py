@@ -10,6 +10,12 @@ urlpatterns = [
         "reportes/horas-semanales/",
         views.reporte_horas_semanales,
         name="reporte-horas-semanales",
+        
+    ),
+    path(
+        "reportes/aprobacion/",
+        views.evaluacion_aprobacion,
+        name="evaluacion-aprobacion",
     ),
 ]
 

@@ -64,3 +64,53 @@ def reporte_horas_semanales(request):
     }
 
     return Response(data, status=status.HTTP_200_OK)
+@api_view(["POST"])
+def evaluacion_aprobacion(request):
+
+    notas = request.data.get("notas")
+    nota_minima = request.data.get("notaMinima")
+
+    if notas is None or nota_minima is None:
+        return Response(
+            {"error": "Los campos 'notas' y 'notaMinima' son requeridos."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not isinstance(notas, list):
+        return Response(
+            {"error": "'notas' debe ser un arreglo (lista) de números."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if len(notas) < 3 or len(notas) > 5:
+        return Response(
+            {"error": "'notas' debe tener entre 3 y 5 valores."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    total = 0.0
+    for n in notas:
+        try:
+            total += float(n)
+        except (TypeError, ValueError):
+            return Response(
+                {"error": "Todos los valores de 'notas' deben ser numéricos."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    promedio = total / len(notas)
+
+    if promedio >= float(nota_minima):
+        estado = "Aprobado"
+        mensaje = f"El estudiante aprobó con promedio {promedio:.2f}."
+    else:
+        estado = "Reprobado"
+        mensaje = f"El estudiante reprobó con promedio {promedio:.2f}."
+
+    data = {
+        "promedio": round(promedio, 2),
+        "estado": estado,
+        "mensaje": mensaje
+    }
+
+    return Response(data, status=status.HTTP_200_OK)
